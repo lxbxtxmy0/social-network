@@ -1,0 +1,11 @@
+CREATE TABLE user
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    surname VARCHAR(50) NOT NULL,
+    login VARCHAR(50) NOT NULL,
+    password VARCHAR(60) NOT NULL,
+    avatar_source VARCHAR(250) NOT NULL,
+    balance INT NOT NULL DEFAULT 100,
+    bio VARCHAR(300) NULL
+);
