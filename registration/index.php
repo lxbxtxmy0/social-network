@@ -23,7 +23,7 @@ if (isset($_SESSION['user_id'])) {
     <h1>Регистрация нового профиля</h1>
     <form class="form">
         <label for="avatar">Аватар</label>
-        <input type="file" id="avatar" name="avatar" accept="image/*">
+        <input type="file" id="avatar" name="avatar" accept="image/jpeg, image/png, image.jpg">
         <label for="name">Имя</label>
         <input type="text" id="name" name="name">
         <label for="surname">Фамилия</label>

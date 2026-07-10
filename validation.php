@@ -1,14 +1,23 @@
 <?php
 
-function isNumber($char): bool
+function isDigit($char): bool
 {
     return $char >= '0' && $char <= '9';
 }
 
+function isNumber($string): bool {
+    for ($i = 0; $i < strlen($string); $i++) {
+        if (!isDigit($string[$i])) {
+            return false;
+        }
+    }
+    return true;
+}
 function isLetter($char): bool
 {
     return $char >= 'a' && $char <= 'z' || $char >= 'A' && $char <= 'Z';
 }
+
 
 function validateLogin($login): void
 {
@@ -21,12 +30,12 @@ function validateLogin($login): void
         http_response_code(400);
         die(json_encode(['error' => 'Логин слишком длинный'], JSON_UNESCAPED_UNICODE));
     }
-    if (isNumber($login[0]) || $login[0] == '_') {
+    if (isDigit($login[0]) || $login[0] == '_') {
         http_response_code(400);
         die(json_encode(['error' => 'Логин некорректен'], JSON_UNESCAPED_UNICODE));
     }
     for ($i = 1; $i < $length; $i++) {
-        if (!(isLetter($login[$i]) || isNumber($login[$i]) || $login[$i] == '_')) {
+        if (!(isLetter($login[$i]) || isDigit($login[$i]) || $login[$i] == '_')) {
             http_response_code(400);
             die(json_encode(['error' => 'Логин содержит недопустимые символы'], JSON_UNESCAPED_UNICODE));
         }
