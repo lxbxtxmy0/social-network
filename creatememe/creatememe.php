@@ -77,7 +77,7 @@ $coins = $_POST['coins'] ?? null;
 
 if (!$title || !$coins) {
     http_response_code(400);
-    die(json_encode(['error' => 'Заполнены не все поля'], JSON_UNESCAPED_UNICODE));
+    die(json_encode(['error' => 'Заполнены не все поля' . $title . $coins], JSON_UNESCAPED_UNICODE));
 }
 
 if (!isNumber($coins)) {
@@ -89,7 +89,6 @@ if ($coins < 5) {
     http_response_code(400);
     die(json_encode(['error' => 'Минимальная цена создания мема - 5 коинов'], JSON_UNESCAPED_UNICODE));
 }
-
 
 $countPhotos = count($_FILES['images']['name']);
 
@@ -124,9 +123,9 @@ $description = $_POST['description'] ?? null;
 
 try {
     $connection->beginTransaction();
+    downUserBalance($connection, $userId, $coins);
     $memeId = createMeme($connection, $userId, $title, $description);
     saveImages($connection, $memeId, $savedImages);
-    downUserBalance($connection, $userId, $coins);
     saveInvestment($connection, $userId, $memeId, $coins);
     $connection->commit();
 } catch(Exception $error) {

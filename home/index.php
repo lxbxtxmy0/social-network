@@ -12,6 +12,9 @@ require_once '../database.php';
 $connection = connectDatabase();
 $memes = getLastMemes($connection);
 
+$userId = $_SESSION['user_id'];
+$balance = getUserBalance($connection, $userId);
+
 ?>
 
 
@@ -26,7 +29,7 @@ $memes = getLastMemes($connection);
 <body>
 <div class="page">
     <header>
-
+        <p>баланс <?= $balance ?></p>
     </header>
     <main>
         <?php

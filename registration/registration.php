@@ -21,6 +21,14 @@ function createUser($connection, $name, $surname, $login, $password, $avatarSour
     return $connection->lastInsertId();
 }
 
+function isAccessibleLogin($connection, $login): bool {
+    $checkLogin = "SELECT login FROM user WHERE login = :login";
+    $statement = $connection->prepare($checkLogin);
+    $statement->execute(['login' => $login]);
+    $login = $statement->fetchColumn;
+    return isset($login);
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     die(json_encode(['error' => 'Только POST'], JSON_UNESCAPED_UNICODE));
@@ -29,6 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $name = $_POST['name'] ?? null;
 $surname = $_POST['surname'] ?? null;
 $login = $_POST['login'] ?? null;
+
+if (!isAccessibleLogin($connection, $login)) {
+    http_response_code(400);
+    die(json_encode(['error' => 'Логин уже занят'], JSON_UNESCAPED_UNICODE));
+}
+
 $password = $_POST['password'] ?? null;
 
 if (!$name || !$surname || !$login || !$password) {
@@ -54,7 +68,7 @@ $avatarSource = $pathToDir . $fileName;
 
 if (!move_uploaded_file($avatar['tmp_name'], $avatarSource)) {
     http_response_code(500);
-    die(json_encode(['error' => 'Не удалось сохранить на сервер']));
+    die(json_encode(['error' => 'Не удалось сохранить на сервер'], JSON_UNESCAPED_UNICODE));
 }
 
 $userId = createUser($connection, $name, $surname, $login, $password, $avatarSource);
