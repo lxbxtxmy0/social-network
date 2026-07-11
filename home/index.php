@@ -34,7 +34,7 @@ $balance = getUserBalance($connection, $userId);
     <main>
         <?php
             foreach ($memes as $meme) {
-                include 'view/post_pattern.php';
+                include 'view/meme_pattern.php';
             }
         ?>
     </main>

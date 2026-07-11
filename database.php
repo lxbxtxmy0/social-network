@@ -61,32 +61,32 @@ function getUserIdByLogin($connection, $login): int|null
     return $id;
 }
 
-function getUserMemes($connection, $userId): array {
-    $getMemes = "SELECT * FROM meme WHERE user_id = " . $userId . " ORDER BY published_at DESC";
+function getUserMemes($connection, $userId): array
+{
+    $getMemes = "SELECT id FROM meme WHERE user_id = " . $userId . " ORDER BY published_at DESC";
     $statement = $connection->query($getMemes);
     $memes = $statement->fetchAll(PDO::FETCH_ASSOC);
     $result = [];
     foreach ($memes as $meme) {
-        $getImages = "SELECT source FROM image WHERE meme_id = " . $meme['id'] . " ORDER BY sort_order ASC";
-        $statement = $connection->query($getImages);
-        $images = $statement->fetchAll(PDO::FETCH_COLUMN);
+        $getImage = "SELECT source FROM image WHERE meme_id = " . $meme['id'] . " AND sort_order = 0";
+        $statement = $connection->query($getImage);
+        $image = $statement->fetchColumn();
 
         $getInvestments = "SELECT SUM(donated_coins) FROM investment WHERE meme_id = " . $meme['id'];
         $statement = $connection->query($getInvestments);
         $investments = $statement->fetchColumn();
 
         $result[] = [
-            'title' => htmlspecialchars($meme['title']),
-            'description' => htmlspecialchars($meme['description']),
-            'published_at' => $meme['published_at'],
-            'images' => $images,
+            'id' => $meme['id'],
+            'image' => $image,
             'investments' => $investments
         ];
     }
     return $result;
 }
 
-function getPersonalData($connection, $userId): array {
+function getPersonalData($connection, $userId): array
+{
     $getPersonalData = "SELECT name, surname, avatar_source, balance, bio FROM user WHERE id = " . $userId;
     $statement = $connection->query($getPersonalData);
     $personalData = $statement->fetch(PDO::FETCH_ASSOC);
@@ -94,7 +94,8 @@ function getPersonalData($connection, $userId): array {
     return $personalData;
 }
 
-function getProfileInvestments($connection, $userId): array {
+function getProfileInvestments($connection, $userId): array
+{
     $getProfileInvestments = <<<SQL
         SELECT SUM(donated_coins) AS coins, meme_id FROM investment
         WHERE user_id = $userId GROUP BY meme_id ORDER BY coins DESC
@@ -103,13 +104,19 @@ function getProfileInvestments($connection, $userId): array {
     $profileInvestments = $statement->fetchAll(PDO::FETCH_ASSOC);
     $result = [];
     foreach ($profileInvestments as $investment) {
-        $getMemeInfo = "SELECT title, published_at FROM meme WHERE id = " . $investment['meme_id'];
+        $getMemeInfo = "SELECT id, title, published_at FROM meme WHERE id = " . $investment['meme_id'];
         $statement = $connection->query($getMemeInfo);
         $memeInfo = $statement->fetch(PDO::FETCH_ASSOC);
 
+        $getMemeImage = "SELECT source FROM image WHERE sort_order = 0 AND meme_id = " . $investment['meme_id'];
+        $statement = $connection->query($getMemeImage);
+        $image = $statement->fetchColumn();
+
         $result[] = [
+            'id' => $investment['meme_id'],
             'title' => htmlspecialchars($memeInfo['title']),
             'published_at' => $memeInfo['published_at'],
+            'image' => $image,
             'investments' => $investment['coins']
         ];
     }
@@ -122,7 +129,7 @@ function getProfileData($connection, $profileId): array
         $personalData = getPersonalData($connection, $profileId);
         $investments = getProfileInvestments($connection, $profileId);
         $memes = getUserMemes($connection, $profileId);
-    } catch(Exception $error) {
+    } catch (Exception $error) {
         http_response_code(500);
         die(json_encode(['error' => 'Ошибка сервера. Повторите позже' . $error->getMessage()], JSON_UNESCAPED_UNICODE));
     }
