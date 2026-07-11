@@ -8,7 +8,7 @@ if (empty($_SESSION['user_id'])) {
 }
 
 
-require_once '../database.php';
+require_once '../database/database.php';
 $connection = connectDatabase();
 $memes = getLastMemes($connection);
 

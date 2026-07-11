@@ -18,7 +18,7 @@ if (!$login) {
     exit;
 }
 
-require_once 'database.php';
+require_once 'database/database.php';
 $connection = connectDatabase();
 
 $profileId = getUserIdByLogin($connection, $login);

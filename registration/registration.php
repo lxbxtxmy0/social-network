@@ -1,7 +1,7 @@
 <?php
 
-require_once '../validation.php';
-require_once '../database.php';
+require_once '../validation/validation.php';
+require_once '../database/database.php';
 $connection = connectDatabase();
 
 function createUser($connection, $name, $surname, $login, $password, $avatarSource): int

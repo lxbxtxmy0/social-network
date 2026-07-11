@@ -1,6 +1,6 @@
 <?php
 
-require_once '../database.php';
+require_once '../database/database.php';
 $connection = connectDataBase();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
