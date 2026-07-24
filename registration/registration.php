@@ -2,81 +2,92 @@
 
 require_once '../validation/validation.php';
 require_once '../database/database.php';
-$connection = connectDatabase();
 
-function createUser($connection, $name, $surname, $login, $password, $avatarSource): int
+function createUserRecord($connectionDatabase, $userName, $userSurname, $userLogin, $userPasswordHash, $avatarSourceString): int
 {
-    $createUser = <<<SQL
+    $createUserQuery = <<<SQL
         INSERT INTO user (name, surname, login, password, avatar_source)
         VALUES (:name, :surname, :login, :password, :avatar_source)
     SQL;
-    $statement = $connection->prepare($createUser);
-    $statement->execute([
-        'name' => $name,
-        'surname' => $surname,
-        'login' => $login,
-        'password' => $password,
-        'avatar_source' => $avatarSource,
+
+    $statementUser = $connectionDatabase->prepare($createUserQuery);
+    $statementUser->execute([
+        'name' => $userName,
+        'surname' => $userSurname,
+        'login' => $userLogin,
+        'password' => $userPasswordHash,
+        'avatar_source' => $avatarSourceString,
     ]);
-    return $connection->lastInsertId();
+
+    return (int)$connectionDatabase->lastInsertId();
 }
 
-function isAccessibleLogin($connection, $login): bool {
-    $checkLogin = "SELECT login FROM user WHERE login = :login";
-    $statement = $connection->prepare($checkLogin);
-    $statement->execute(['login' => $login]);
-    $login = $statement->fetchColumn;
-    return isset($login);
+function isLoginAvailable($connectionDatabase, $userLogin): bool
+{
+    $checkLoginQuery = "SELECT id FROM user WHERE login = :login";
+    $statementCheck = $connectionDatabase->prepare($checkLoginQuery);
+    $statementCheck->execute(['login' => $userLogin]);
+    $userId = $statementCheck->fetchColumn();
+
+    if ($userId) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    die(json_encode(['error' => 'Только POST'], JSON_UNESCAPED_UNICODE));
+function processRegistration(): void
+{
+    $connectionDatabase = connectDatabase();
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        die(json_encode(['error' => 'Только POST запросы'], JSON_UNESCAPED_UNICODE));
+    }
+
+    $userName = $_POST['name'] ?? null;
+    $userSurname = $_POST['surname'] ?? null;
+    $userLogin = $_POST['login'] ?? null;
+    $userPassword = $_POST['password'] ?? null;
+
+    if (!$userName || !$userSurname || !$userLogin || !$userPassword) {
+        http_response_code(400);
+        die(json_encode(['error' => 'Не указаны все поля'], JSON_UNESCAPED_UNICODE));
+    }
+
+    if (!isLoginAvailable($connectionDatabase, $userLogin)) {
+        http_response_code(400);
+        die(json_encode(['error' => 'Логин уже занят'], JSON_UNESCAPED_UNICODE));
+    }
+
+    validateLogin($userLogin);
+    validatePassword($userPassword);
+
+    $userPasswordHash = password_hash($userPassword, PASSWORD_DEFAULT);
+    $avatarFileArray = $_FILES['avatar'] ?? null;
+
+    if (!$avatarFileArray || $avatarFileArray['error'] !== UPLOAD_ERR_OK) {
+        http_response_code(400);
+        die(json_encode(['error' => 'Не прикреплена аватарка'], JSON_UNESCAPED_UNICODE));
+    }
+
+    $directoryPath = '../src/img/';
+    $fileNameString = uniqid() . '_' . basename($avatarFileArray['name']);
+    $avatarSourceString = $directoryPath . $fileNameString;
+
+    if (!move_uploaded_file($avatarFileArray['tmp_name'], $avatarSourceString)) {
+        http_response_code(500);
+        die(json_encode(['error' => 'Не удалось сохранить фото на сервер'], JSON_UNESCAPED_UNICODE));
+    }
+
+    $createdUserId = createUserRecord($connectionDatabase, $userName, $userSurname, $userLogin, $userPasswordHash, $avatarSourceString);
+
+    session_name('auth');
+    session_start();
+    $_SESSION['user_id'] = $createdUserId;
+
+    http_response_code(200);
+    echo json_encode(['redirect' => '../home']);
 }
 
-$name = $_POST['name'] ?? null;
-$surname = $_POST['surname'] ?? null;
-$login = $_POST['login'] ?? null;
-
-if (!isAccessibleLogin($connection, $login)) {
-    http_response_code(400);
-    die(json_encode(['error' => 'Логин уже занят'], JSON_UNESCAPED_UNICODE));
-}
-
-$password = $_POST['password'] ?? null;
-
-if (!$name || !$surname || !$login || !$password) {
-    http_response_code(400);
-    die(json_encode(['error' => 'Не указаны все поля'], JSON_UNESCAPED_UNICODE));
-}
-
-validateLogin($login);
-validatePassword($password);
-
-$password = password_hash($password, PASSWORD_DEFAULT);
-
-$avatar = $_FILES['avatar'] ?? null;
-
-if (!$avatar || $avatar['error'] != UPLOAD_ERR_OK) {
-    http_response_code(400);
-    die(json_encode(['error' => 'Не прикреплена аватарка'], JSON_UNESCAPED_UNICODE));
-}
-
-$pathToDir = '../src/img/';
-$fileName = uniqid() . '_' . basename($avatar['name']);
-$avatarSource = $pathToDir . $fileName;
-
-if (!move_uploaded_file($avatar['tmp_name'], $avatarSource)) {
-    http_response_code(500);
-    die(json_encode(['error' => 'Не удалось сохранить на сервер'], JSON_UNESCAPED_UNICODE));
-}
-
-$userId = createUser($connection, $name, $surname, $login, $password, $avatarSource);
-
-session_name('auth');
-session_start();
-$_SESSION['user_id'] = $userId;
-
-http_response_code(200);
-echo json_encode(['redirect' => '../home']);
-
+processRegistration();

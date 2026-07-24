@@ -19,9 +19,9 @@ if (isset($_SESSION['user_id'])) {
     <script src="script.js"></script>
 </head>
 <body>
-<div class="page">
+<div class="page_wrapper">
     <h1>Логинация</h1>
-    <form class="form">
+    <form class="login_form">
         <label for="login">Логин</label>
         <input type="text" id="login" name="login">
         <label for="password">Пароль</label>

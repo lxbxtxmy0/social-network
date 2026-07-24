@@ -1,12 +1,17 @@
 <?php
 
-session_name('auth');
-session_start();
+function logOut(): void
+{
+    session_name('auth');
+    session_start();
 
+    $_SESSION = [];
 
-$_SESSION = [];
-setcookie('auth', '', time() - 3600, '/');
+    setcookie('auth', '', time() - 3600, '/');
 
-session_destroy();
+    session_destroy();
 
-header('Location: /login');
+    header('Location: /login');
+}
+
+logOut();

@@ -1,0 +1,513 @@
+@font-face {
+    font-family: 'Nunito';
+    src: url('/src/font/Nunito-Medium.ttf') format('truetype');
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Nunito';
+    src: url('/src/font/Nunito-Regular.ttf') format('truetype');
+    font-weight: 400;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #111015;
+    color: #FFFFFF;
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+}
+
+.page_wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 120px;
+}
+
+.main_content {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.navigation_bar {
+    position: fixed;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: calc(100% - 40px);
+    max-width: 380px;
+    height: 70px;
+    background: #19181D;
+    border: 1px solid #323138;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 100;
+}
+
+.navigation_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 100%;
+    opacity: 0.4;
+}
+
+.navigation_item img {
+    width: 26px;
+    height: 26px;
+}
+
+.navigation_item.active {
+    opacity: 1;
+}
+
+.navigation_label {
+    display: none;
+}
+
+.navigation_balance {
+    display: none;
+}
+
+.profile_container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.profile_header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.profile_avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.profile_name {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.profile_biography {
+    font-size: 16px;
+    color: #626168;
+}
+
+.profile_section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section_title {
+    font-size: 22px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.investments_list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.investment_card {
+    background: #19181D;
+    border: 1px solid #323138;
+    border-radius: 20px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: calc(50% - 8px);
+    cursor: pointer;
+}
+
+.investment_image_box {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    border: 1px dashed #4A4950;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.investment_image_box img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.investment_statistics {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.investment_green {
+    color: #3CF385;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.investment_purple {
+    color: #8A2BE2;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.posts_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.post_card {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    border: 1px dashed #4A4950;
+    overflow: hidden;
+    background: #19181D;
+    position: relative;
+    cursor: pointer;
+}
+
+.post_card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal_window {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(17, 16, 21, 0.9);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal_content {
+    background: #19181D;
+    border: 1px solid #323138;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-auto-flow: row;
+    gap: 16px;
+    padding: 20px;
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
+.modal_header {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal_header_information {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal_header_information img {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.modal_header_information span {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#modal_close_button {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    font-size: 24px;
+    color: #FFFFFF;
+    border: 1px solid #FFFFFF;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.modal_image_container {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    background: #111015;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.modal_image_container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.modal_title {
+    grid-column: 1 / 3;
+    grid-row: 3;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.investment_capitalization {
+    grid-column: 1 / 3;
+    grid-row: 4;
+    color: #FFFFFF;
+    font-size: 14px;
+    background: #19181D;
+    border: 1px solid #323138;
+    border-radius: 10px;
+    padding: 6px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+}
+
+.modal_description {
+    grid-column: 1 / 3;
+    grid-row: 5;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #E0E0E0;
+}
+
+.modal_date {
+    grid-column: 1 / 3;
+    grid-row: 6;
+    text-align: right;
+    font-size: 14px;
+    color: #626168;
+    margin-top: 10px;
+}
+
+@media (min-width: 768px) {
+    .main_content {
+        max-width: 800px;
+        padding-top: 50px;
+    }
+
+    .investment_card {
+        width: 220px;
+    }
+
+    .modal_content {
+        max-width: 850px;
+        grid-template-columns: 1fr 1fr auto;
+        grid-template-rows: auto auto auto auto 1fr;
+        gap: 16px 30px;
+        padding: 30px;
+        overflow-y: visible;
+    }
+
+    .modal_image_container {
+        grid-column: 1;
+        grid-row: 1 / 6;
+    }
+
+    .modal_header {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+    }
+
+    #modal_close_button {
+        grid-column: 3;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+    }
+
+    .modal_title {
+        grid-column: 2 / 4;
+        grid-row: 2;
+        font-size: 28px;
+    }
+
+    .investment_capitalization {
+        grid-column: 2 / 4;
+        grid-row: 3;
+    }
+
+    .modal_description {
+        grid-column: 2 / 4;
+        grid-row: 4;
+    }
+
+    .modal_date {
+        grid-column: 2 / 4;
+        grid-row: 5;
+        text-align: left;
+        align-self: end;
+    }
+}
+
+@media (min-width: 1200px) {
+    .page_wrapper {
+        flex-direction: row;
+        padding-bottom: 0;
+        padding-left: 140px;
+        justify-content: center;
+    }
+
+    .navigation_bar {
+        position: fixed;
+        bottom: auto;
+        top: 0;
+        left: 0;
+        right: auto;
+        margin: 0;
+        width: 140px;
+        max-width: none;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+        border-right: 1px solid #323138;
+        background: #19181D;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 50px 0;
+        gap: 40px;
+    }
+
+    .navigation_item {
+        width: 100%;
+        height: auto;
+        padding: 10px 0;
+    }
+
+    .navigation_balance {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        margin-top: auto;
+    }
+
+    .balance_label {
+        font-size: 14px;
+        color: #626168;
+        display: block;
+    }
+
+    .balance_value {
+        font-size: 20px;
+        font-weight: 500;
+        display: block;
+    }
+
+    .main_content {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 80px 40px;
+    }
+
+    .investments_list {
+        justify-content: flex-start;
+    }
+
+    .investment_card {
+        width: 250px;
+    }
+
+    .posts_grid {
+        gap: 16px;
+    }
+
+    .modal_content {
+        max-width: 1100px;
+        padding: 40px;
+        gap: 20px 50px;
+    }
+
+    .modal_header_information span {
+        font-size: 24px;
+    }
+
+    .modal_header_information img {
+        width: 50px;
+        height: 50px;
+    }
+
+    #modal_close_button {
+        width: 40px;
+        height: 40px;
+        font-size: 28px;
+    }
+
+    .modal_description {
+        font-size: 18px;
+    }
+}
