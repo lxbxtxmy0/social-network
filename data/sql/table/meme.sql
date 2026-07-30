@@ -1,0 +1,9 @@
+CREATE TABLE meme
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    description VARCHAR(300) NULL,
+    published_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user (id)
+);

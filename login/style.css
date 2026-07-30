@@ -1,0 +1,140 @@
+@font-face {
+    font-family: 'Nunito';
+    src: url('/src/font/Nunito-Medium.ttf') format('truetype');
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Nunito';
+    src: url('/src/font/Nunito-Regular.ttf') format('truetype');
+    font-weight: 400;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #111015;
+    color: #FFFFFF;
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+}
+
+.page_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 360px;
+    background: #19181D;
+    border: 1px solid #323138;
+    border-radius: 30px;
+    padding: 40px 30px;
+    gap: 30px;
+}
+
+.logo_gradient {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #3CF385 0%, #8A2BE2 100%);
+}
+
+.page_title {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.login_form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.text_input {
+    font-family: 'Nunito', sans-serif;
+    background: transparent;
+    color: #FFFFFF;
+    border: 1px solid #323138;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 16px;
+    outline: none;
+    width: 100%;
+}
+
+.text_input::placeholder {
+    color: #626168;
+}
+
+.password_wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.submit_button {
+    background: #3CF385;
+    color: #111015;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 16px;
+    border-radius: 12px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#error_container {
+    width: 100%;
+}
+
+.error_message_box {
+    color: #F95C63;
+    background: rgba(249, 92, 99, 0.05);
+    border: 1px solid #F95C63;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 16px;
+    text-align: center;
+    width: 100%;
+}
+
+.register_prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+}
+
+.register_prompt span {
+    color: #FFFFFF;
+}
+
+.register_link {
+    color: #3CF385;
+}

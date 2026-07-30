@@ -1,0 +1,8 @@
+CREATE TABLE image
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    meme_id INT NOT NULL,
+    source VARCHAR(250) NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (meme_id) REFERENCES meme (id) ON DELETE CASCADE
+);
